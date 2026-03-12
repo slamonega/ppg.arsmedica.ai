@@ -67,6 +67,19 @@ async function startCamera() {
         
         video.srcObject = stream;
         
+        // Intentar encender el flash automáticamente
+        const track = stream.getVideoTracks()[0];
+        try {
+            const capabilities = track.getCapabilities();
+            if (capabilities.torch) {
+                await track.applyConstraints({
+                    advanced: [{ torch: true }]
+                });
+            }
+        } catch (e) {
+            console.log("Flash no disponible o no soportado por este navegador.");
+        }
+        
         // Esperamos a que el video esté listo para reproducir
         video.onloadedmetadata = () => {
             video.play();
@@ -187,6 +200,17 @@ function calculateRMSSD(rrIntervals) {
 }
 
 function updateQuality() {
+    let now = Date.now();
+    let resultElement = document.getElementById("result");
+
+    // Si no se detectan latidos por más de 3 segundos, reiniciamos el estado
+    if (lastBeat !== 0 && (now - lastBeat > 3000)) {
+        resultElement.innerText = "Esperando señal...";
+        resultElement.style.color = "inherit";
+        beats = []; // Limpiamos historial para nueva medición
+        lastBeat = 0;
+    }
+
     if (values.length < 50) {
         document.getElementById("quality").innerText = "Analizando...";
         return;
@@ -197,14 +221,17 @@ function updateQuality() {
     let sd = Math.sqrt(variance);
 
     let qualityLabel = document.getElementById("quality");
-    if (sd > 10) {
-        qualityLabel.innerText = "Buena";
-        qualityLabel.style.color = "lightgreen";
-    } else if (sd > 4) {
-        qualityLabel.innerText = "Media";
-        qualityLabel.style.color = "orange";
-    } else {
+    
+    if (sd < 4) { // Poca variación = no hay dedo o señal muy plana
         qualityLabel.innerText = "Baja / Sin dedo";
         qualityLabel.style.color = "#9ca3af";
+        resultElement.innerText = "Esperando señal...";
+        resultElement.style.color = "inherit";
+    } else if (sd > 10) {
+        qualityLabel.innerText = "Buena";
+        qualityLabel.style.color = "lightgreen";
+    } else {
+        qualityLabel.innerText = "Media";
+        qualityLabel.style.color = "orange";
     }
 }
