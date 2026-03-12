@@ -45,21 +45,50 @@ function updateChart(value) {
     chart.update();
 }
 
-// Acceso a la cámara
-navigator.mediaDevices.getUserMedia({
-    video: { facingMode: "environment" }
-})
-.then(stream => {
-    video.srcObject = stream;
-    requestAnimationFrame(processFrame);
-})
-.catch(err => {
-    console.error("Error al acceder a la cámara:", err);
-    document.getElementById("result").innerText = "Error: Sin acceso a cámara";
-});
+// Acceso a la cámara mejorado
+const constraints = {
+    video: { 
+        facingMode: "environment",
+        width: { ideal: 640 },
+        height: { ideal: 480 }
+    }
+};
+
+async function startCamera() {
+    try {
+        let stream;
+        try {
+            // Intentar con cámara trasera
+            stream = await navigator.mediaDevices.getUserMedia(constraints);
+        } catch (e) {
+            // Si falla, intentar con cualquier cámara disponible
+            stream = await navigator.mediaDevices.getUserMedia({ video: true });
+        }
+        
+        video.srcObject = stream;
+        
+        // Esperamos a que el video esté listo para reproducir
+        video.onloadedmetadata = () => {
+            video.play();
+            requestAnimationFrame(processFrame);
+        };
+        
+        document.getElementById("result").innerText = "Cámara lista. Poné el dedo.";
+        
+    } catch (err) {
+        console.error("Error al acceder a la cámara:", err);
+        document.getElementById("result").innerText = "Error: Sin acceso a cámara. Revisá los permisos.";
+    }
+}
+
+startCamera();
 
 function processFrame() {
-    if (video.paused || video.ended) return;
+    // Si el video no está listo o está en pausa, seguimos esperando sin dibujar
+    if (video.paused || video.ended || video.readyState < 2) {
+        requestAnimationFrame(processFrame);
+        return;
+    }
 
     ctx.drawImage(video, 0, 0, 200, 200);
     let frame = ctx.getImageData(0, 0, 200, 200);

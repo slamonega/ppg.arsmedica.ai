@@ -57,7 +57,11 @@ canvas#canvas{
 }
 
 video{
-    display:none;
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    opacity: 0;
+    pointer-events: none;
 }
 
 .metrics{
