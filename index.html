@@ -1,39 +1,66 @@
 <!DOCTYPE html>
-<html>
+<html lang="es">
 <head>
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Detector de pulso</title>
-<link rel="stylesheet" href="style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Detector de pulso</title>
+    <link rel="stylesheet" href="style.css">
 </head>
-
 <body>
+    <div class="container">
+        <h1>Detector de pulso</h1>
+        <p class="subtitle">
+            Colocá el dedo sobre la cámara y el flash
+        </p>
 
-<h2>Detector de pulso con cámara</h2>
-<p>Poné el dedo sobre la cámara y el flash</p>
+        <div class="sensor-card">
+            <div class="sensor-circle">
+                <canvas id="canvas"></canvas>
+            </div>
+            <video id="video" autoplay playsinline></video>
+        </div>
 
-<video id="video" autoplay playsinline></video>
-<canvas id="canvas"></canvas>
+        <div class="metrics">
+            <div class="metric">
+                <div class="metric-label">BPM</div>
+                <div id="bpm" class="metric-value">--</div>
+            </div>
+            <div class="metric">
+                <div class="metric-label">Variabilidad</div>
+                <div id="rr" class="metric-value">--</div>
+            </div>
+            <div class="metric">
+                <div class="metric-label">Calidad señal</div>
+                <div id="quality" class="metric-value">--</div>
+            </div>
+        </div>
 
-<h3 id="bpm">BPM: --</h3>
-<h3 id="rr">Variabilidad: --</h3>
-<h2 id="result">Esperando señal...</h2>
+        <div id="result" class="result">
+            Esperando señal...
+        </div>
 
-<script src="script.js"></script>
-<section id="resumen" style="max-width:800px;margin:auto;padding:20px;line-height:1.6;font-family:sans-serif;">
-  <h2>Resumen del proyecto</h2>
+        <div class="chart-container">
+            <canvas id="ppgChart"></canvas>
+        </div>
 
-  <p>
-  Este proyecto propone una herramienta web que permite medir el pulso y detectar posibles irregularidades del ritmo cardíaco utilizando únicamente la <strong>cámara y el flash de un teléfono inteligente</strong>. Al colocar el dedo sobre la cámara, el sistema registra variaciones en el flujo sanguíneo mediante fotopletismografía (PPG) y analiza en tiempo real los intervalos entre latidos directamente en el navegador.
-  </p>
+        <section class="resumen">
+            <h2>Resumen del proyecto</h2>
+            <p>
+                Este proyecto propone una herramienta web que permite medir el pulso y detectar posibles irregularidades del ritmo cardíaco utilizando únicamente la <strong>cámara y el flash de un teléfono inteligente</strong>.
+            </p>
+            <p>
+                Al colocar el dedo sobre la cámara, el sistema registra variaciones en el flujo sanguíneo mediante fotopletismografía (PPG) y analiza en tiempo real los intervalos entre latidos directamente en el navegador.
+            </p>
+            <p>
+                A partir de estos datos, la aplicación calcula la frecuencia cardíaca y evalúa la variabilidad del pulso para identificar patrones compatibles con <strong>fibrilación auricular</strong> y otras arritmias.
+            </p>
+            <p>
+                En el contexto de la <strong>salud global</strong>, este enfoque explora cómo tecnologías digitales ampliamente disponibles pueden ampliar el acceso a herramientas de detección temprana de enfermedades cardiovasculares, especialmente en entornos con recursos limitados.
+            </p>
+        </section>
+    </div>
 
-  <p>
-  A partir de estos datos, la aplicación calcula la frecuencia cardíaca y evalúa la variabilidad del pulso para identificar patrones compatibles con <strong>fibrilación auricular</strong> y otras arritmias.
-  </p>
-
-  <p>
-  En el contexto de la <strong>salud global</strong>, este enfoque explora cómo tecnologías digitales ampliamente disponibles pueden ampliar el acceso a herramientas de <strong>detección temprana de enfermedades cardiovasculares</strong>, especialmente en entornos con recursos limitados o acceso restringido a equipamiento médico especializado. El objetivo es facilitar estrategias de monitoreo accesibles que puedan contribuir a la prevención y al diagnóstico oportuno de trastornos cardíacos.
-  </p>
-
-</section>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="script.js"></script>
 </body>
 </html>
