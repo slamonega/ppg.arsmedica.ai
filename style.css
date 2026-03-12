@@ -1,0 +1,18 @@
+body{
+font-family: sans-serif;
+text-align:center;
+background:#111;
+color:white;
+}
+
+video{
+display:none;
+}
+
+canvas{
+width:200px;
+height:200px;
+border-radius:10px;
+background:black;
+margin-top:20px;
+}
